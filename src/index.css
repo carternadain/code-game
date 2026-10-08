@@ -209,8 +209,7 @@ main.is-lesson {
   letter-spacing: -0.02em;
 }
 .wordmark span {
-  background: linear-gradient(transparent 58%, var(--hl) 58%);
-  padding-inline: 1px;
+  color: var(--accent);
 }
 .tabs {
   display: flex;
