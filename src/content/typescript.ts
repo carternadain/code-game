@@ -5,6 +5,7 @@ export const typescript: Realm = {
   name: 'Type Fortress',
   topic: 'TypeScript',
   icon: '🏰',
+  glyph: 'TS',
   color: '#3178c6',
   when: 'Month 2',
   blurb: 'Let the compiler catch your bugs before your users do. Real type-checking: errors block the build, just like CI.',

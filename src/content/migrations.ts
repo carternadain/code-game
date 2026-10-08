@@ -12,6 +12,7 @@ export const migrations: Realm = {
   name: 'Migration Mines',
   topic: 'Alembic & Database Migrations',
   icon: '⛏️',
+  glyph: 'MIG',
   color: '#a0522d',
   when: 'Month 4',
   blurb: 'Why migrations exist, what Alembic actually does under the hood, and how to change a production schema without breaking it.',

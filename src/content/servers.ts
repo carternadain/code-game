@@ -5,6 +5,7 @@ export const servers: Realm = {
   name: 'Server Citadel',
   topic: 'Servers, HTTP & APIs',
   icon: '🏯',
+  glyph: 'HTTP',
   color: '#00b894',
   when: 'Month 6',
   blurb: 'What really happens between a click and a response: DNS, TCP, HTTP, routing, middleware, auth. Build the internals of Express yourself.',

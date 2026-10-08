@@ -73,7 +73,7 @@ export default function App() {
   return (
     <GameProvider>
       <Header route={route} />
-      <main>
+      <main className={route.startsWith('/lesson/') ? 'is-lesson' : undefined}>
         <Router route={route} />
       </main>
       <Toasts />

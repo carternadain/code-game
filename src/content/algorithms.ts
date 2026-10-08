@@ -5,6 +5,7 @@ export const algorithms: Realm = {
   name: 'Algorithm Arena',
   topic: 'Data Structures & Algorithms',
   icon: '⚔️',
+  glyph: 'O(n)',
   color: '#e84393',
   when: 'Month 5–6',
   blurb: 'Big-O, hash maps, stacks, binary search, recursion, trees and graphs. Tests include speed checks — slow solutions lose.',

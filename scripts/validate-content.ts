@@ -15,6 +15,7 @@ import vm from 'node:vm'
 import initSqlJs from 'sql.js'
 import { transform } from 'sucrase'
 import { ALL_LESSONS } from '../src/content'
+import { checkpointNames } from '../src/engine/checkpoints'
 import { HARNESS } from '../src/engine/harness'
 import type { CodeStep } from '../src/types'
 
@@ -26,6 +27,7 @@ const fail = (where: string, msg: string) => {
 }
 
 type Outcome = { ok: boolean; detail: string }
+let lastNames: string[] = []
 
 async function runJs(code: string, tests: string, ts: boolean): Promise<Outcome> {
   const compiled = ts ? transform(code, { transforms: ['typescript'] }).code : code
@@ -44,6 +46,7 @@ async function runJs(code: string, tests: string, ts: boolean): Promise<Outcome>
     if (r.error) return { ok: false, detail: r.error }
     const bad = r.tests.filter((t) => !t.pass)
     if (!r.tests.length) return { ok: false, detail: 'no tests ran' }
+    lastNames = r.tests.map((t) => t.name)
     return { ok: bad.length === 0, detail: bad.map((t) => `${t.name}: ${t.message}`).join('; ') }
   } catch (e) {
     return { ok: false, detail: (e as Error).message }
@@ -127,6 +130,8 @@ for (const { realm, lesson } of ALL_LESSONS) {
       if (!self.ok) good = self
     } else {
       good = await runJs(step.solution, step.tests, step.lang === 'typescript')
+      const listed = checkpointNames(step)
+      if (good.ok && JSON.stringify(listed) !== JSON.stringify(lastNames)) fail(at, `checkpoint list ${JSON.stringify(listed)} != tests ${JSON.stringify(lastNames)}`)
       starter = await runJs(step.starter, step.tests, step.lang === 'typescript')
     }
     if (!good.ok) fail(at, `SOLUTION fails: ${good.detail}`)

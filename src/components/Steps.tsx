@@ -8,7 +8,7 @@ export function Concept({ step }: { step: ConceptStep }) {
       <h2>{step.title}</h2>
       {step.eli5 && (
         <div className="eli5">
-          <span className="eli5-tag">🧸 Stupid simple</span>
+          <span className="eli5-tag">Stupid simple version</span>
           <Markdown text={step.eli5} />
         </div>
       )}
@@ -65,7 +65,7 @@ export function Explain({ step, saved, onSubmit }: { step: ExplainStep; saved?: 
   const words = text.trim() ? text.trim().split(/\s+/).length : 0
   return (
     <div className="explain">
-      <div className="explain-badge">🧠 Explain it back — no AI, no copy-paste</div>
+      <span className="step-kicker">Explain it back · no AI, no copy-paste</span>
       <Markdown text={step.prompt} />
       <textarea
         value={text}

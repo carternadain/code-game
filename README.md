@@ -54,6 +54,16 @@ npm run dev        # http://localhost:5173
 
 Your progress lives in your browser's localStorage. There are no accounts and no backend. Use **Profile → Export** to back it up.
 
+## Host it for free
+
+The app is a static site (no server, no database), so any free static host works.
+
+**Vercel (recommended):** push this repo to GitHub, then at [vercel.com/new](https://vercel.com/new) import it. Vercel detects Vite automatically (build: `npm run build`, output: `dist`). The Hobby plan is free, and every push to `main` redeploys.
+
+Netlify, Cloudflare Pages and GitHub Pages also work with the same settings.
+
+**Install it like an app:** once it's hosted, open it in Chrome or Edge and choose *Install CodeQuest* (the icon in the address bar). On iPhone, use Share → *Add to Home Screen*. It then opens in its own window with its own icon.
+
 ## Project layout
 
 ```

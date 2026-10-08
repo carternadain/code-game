@@ -5,6 +5,7 @@ export const python: Realm = {
   name: 'Serpent Swamp',
   topic: 'Python',
   icon: '🐍',
+  glyph: 'Py',
   color: '#4b8bbe',
   when: 'Month 3',
   blurb: 'Real CPython running in your browser. Learn Python as a JS dev: syntax, data structures, classes, and scripting.',

@@ -1,6 +1,6 @@
 import type { RunResult, TestResult } from '../types'
 
-const PYODIDE = 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/'
+const PYODIDE = 'https://cdn.jsdelivr.net/npm/pyodide@0.27.7/'
 const TIMEOUT_MS = 8000
 
 /**

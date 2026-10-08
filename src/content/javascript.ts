@@ -5,6 +5,7 @@ export const javascript: Realm = {
   name: 'Variable Village',
   topic: 'JavaScript Fundamentals',
   icon: '🏘️',
+  glyph: 'JS',
   color: '#f7df1e',
   when: 'Month 1',
   blurb: 'Rebuild your JS foundation without autocomplete doing the thinking: values, control flow, arrays, objects, closures.',

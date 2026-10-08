@@ -2,6 +2,8 @@ import { lazy, Suspense, useCallback, useState } from 'react'
 import { useGame } from '../game/GameContext'
 import { scheduleReview, today } from '../game/progress'
 import type { Lesson, Realm } from '../types'
+import { RealmTile } from './RealmTile'
+import { Icon } from './Icon'
 import { Concept, Explain, Quiz } from './Steps'
 import { Visualizer } from './Visualizer'
 
@@ -49,24 +51,36 @@ export function LessonPlayer({ realm, lesson, onExit }: { realm: Realm; lesson: 
       })
       return nextP
     })
-    if (first) award(lesson.boss ? 60 : 20, lesson.boss ? 'BOSS DEFEATED 🐉' : 'Lesson complete', { gems: lesson.boss ? 25 : 5 })
+    if (first) award(lesson.boss ? 60 : 20, lesson.boss ? 'Boss defeated' : 'Lesson complete', { gems: lesson.boss ? 25 : 5 })
   }
 
   if (finished) {
     return (
       <div className="lesson-done">
-        <div className="big-emoji">{lesson.boss ? '🐉' : '🏆'}</div>
-        <h1>{lesson.boss ? 'Boss defeated!' : 'Lesson complete!'}</h1>
+        <Icon name={lesson.boss ? 'dragon' : 'trophy'} size={64} className="hero-icon" />
+        <p className="eyebrow">{realm.name}</p>
+        <h1>{lesson.boss ? 'Boss defeated' : 'Lesson complete'}</h1>
         <p className="muted">{lesson.title}</p>
-        <p>
-          Combo: <strong>{p.combo}</strong> · Total XP: <strong>{p.xp}</strong> · Gems: <strong>{p.gems} 💎</strong>
-        </p>
+        <dl className="done-stats">
+          <div>
+            <dt>Total XP</dt>
+            <dd className="tnum">{p.xp}</dd>
+          </div>
+          <div>
+            <dt>Combo</dt>
+            <dd className="tnum">×{p.combo}</dd>
+          </div>
+          <div>
+            <dt>Gems</dt>
+            <dd className="tnum">{p.gems}</dd>
+          </div>
+        </dl>
         <div className="toolbar center">
-          <button className="btn ghost" onClick={() => onExit(false)}>
+          <button className="btn" onClick={() => onExit(false)}>
             Back to {realm.name}
           </button>
-          <button className="btn primary" onClick={() => onExit(true)}>
-            Next lesson →
+          <button className="btn primary big" onClick={() => onExit(true)}>
+            Next lesson <Icon name="arrowRight" />
           </button>
         </div>
       </div>
@@ -74,50 +88,70 @@ export function LessonPlayer({ realm, lesson, onExit }: { realm: Realm; lesson: 
   }
 
   const canContinue = step.kind === 'concept' || stepDone
+  const workspace = step.kind === 'code'
+  const label = { concept: 'Read', visual: 'Watch', quiz: 'Quiz', code: 'Code challenge', explain: 'Explain it back' }[step.kind]
+  const waiting = {
+    concept: '',
+    visual: 'Step through to the last frame to continue',
+    quiz: 'Pick the right answer to continue',
+    code: 'Pass all checkpoints to continue',
+    explain: 'Submit your explanation to continue',
+  }[step.kind]
 
   return (
-    <div className="lesson">
-      <div className="lesson-top">
-        <button className="btn ghost small" onClick={() => onExit(false)}>
-          ✕
+    <div className={`lesson ${workspace ? 'is-workspace' : ''}`}>
+      <div className="lesson-bar">
+        <button className="icon-btn" onClick={() => onExit(false)} aria-label="Leave lesson">
+          <Icon name="x" />
         </button>
-        <div className="steps-bar">
+        <RealmTile realm={realm} size="sm" />
+        <span className="lesson-name">
+          <span className="muted small">{realm.name}</span>
+          <strong>
+            {lesson.title.replace(/^BOSS: /, '')} {lesson.boss && <span className="boss-tag">Boss</span>}
+          </strong>
+        </span>
+        <span className="steps-bar" aria-label={`Step ${index + 1} of ${lesson.steps.length}`}>
           {lesson.steps.map((s, i) => (
-            <div key={i} className={`seg ${i < index ? 'done' : i === index ? 'now' : ''} seg-${s.kind}`} />
+            <span key={i} className={`seg ${i < index ? 'done' : i === index ? 'now' : ''}`} title={s.kind} />
           ))}
-        </div>
-        <span className="muted small">
+        </span>
+        <span className="muted small tnum">
           {index + 1}/{lesson.steps.length}
         </span>
       </div>
-      <div className="lesson-title">
-        <span style={{ color: realm.color }}>
-          {realm.icon} {realm.name}
-        </span>{' '}
-        · {lesson.title} {lesson.boss && <span className="boss-tag">BOSS</span>}
-      </div>
 
-      <div className="card step-card" key={key}>
-        {step.kind === 'concept' && <Concept step={step} />}
-        {step.kind === 'visual' && <Visualizer step={step} onFinished={markDone} />}
+      <div className="lesson-stage" key={key}>
+        {step.kind === 'concept' && (
+          <div className="reader-card">
+            <Concept step={step} />
+          </div>
+        )}
+        {step.kind === 'visual' && (
+          <div className="reader-card wide">
+            <Visualizer step={step} onFinished={markDone} />
+          </div>
+        )}
         {step.kind === 'quiz' && (
-          <Quiz
-            step={step}
-            onAnswer={(firstTry, wrongOnce) => {
-              setStepDone(true)
-              if (firstTry) {
-                award(XP.quizFirstTry, 'Correct first try', { combo: true })
-                update((prev) => ({ ...prev, stats: { ...prev.stats, quizRight: prev.stats.quizRight + 1 } }))
-              } else {
-                breakCombo()
-                award(XP.quizLate, 'Figured it out')
-              }
-              if (wrongOnce) update((prev) => scheduleReview(prev, key, false))
-            }}
-          />
+          <div className="reader-card">
+            <Quiz
+              step={step}
+              onAnswer={(firstTry, wrongOnce) => {
+                setStepDone(true)
+                if (firstTry) {
+                  award(XP.quizFirstTry, 'Correct first try', { combo: true })
+                  update((prev) => ({ ...prev, stats: { ...prev.stats, quizRight: prev.stats.quizRight + 1 } }))
+                } else {
+                  breakCombo()
+                  award(XP.quizLate, 'Figured it out')
+                }
+                if (wrongOnce) update((prev) => scheduleReview(prev, key, false))
+              }}
+            />
+          </div>
         )}
         {step.kind === 'code' && (
-          <Suspense fallback={<p className="muted">Loading the code editor…</p>}>
+          <Suspense fallback={<p className="muted loading">Loading the code editor…</p>}>
             <CodeChallenge
               step={step}
               stepKey={key}
@@ -128,7 +162,7 @@ export function LessonPlayer({ realm, lesson, onExit }: { realm: Realm; lesson: 
                   award(XP.codeSolution, 'Studied the solution')
                   return
                 }
-                award(XP.code + (usedHint ? 0 : XP.codeNoHint), usedHint ? 'Challenge passed' : 'Passed with no hints 🧠', { combo: !usedHint })
+                award(XP.code + (usedHint ? 0 : XP.codeNoHint), usedHint ? 'Challenge passed' : 'Passed with no hints', { combo: !usedHint })
                 update((prev) => ({
                   ...prev,
                   stats: {
@@ -143,21 +177,27 @@ export function LessonPlayer({ realm, lesson, onExit }: { realm: Realm; lesson: 
           </Suspense>
         )}
         {step.kind === 'explain' && (
-          <Explain
-            step={step}
-            saved={p.journal[key]}
-            onSubmit={(text) => {
-              setStepDone(true)
-              update((prev) => ({ ...prev, journal: { ...prev.journal, [key]: text } }))
-              award(XP.explain, 'Explained in your own words')
-            }}
-          />
+          <div className="reader-card">
+            <Explain
+              step={step}
+              saved={p.journal[key]}
+              onSubmit={(text) => {
+                setStepDone(true)
+                update((prev) => ({ ...prev, journal: { ...prev.journal, [key]: text } }))
+                award(XP.explain, 'Explained in your own words')
+              }}
+            />
+          </div>
         )}
       </div>
 
-      <div className="lesson-bottom">
+      <div className="lesson-foot">
+        <span className="foot-label">
+          <span className="eyebrow">{label}</span>
+          {!canContinue && <span className="muted small hide-sm">{waiting}</span>}
+        </span>
         <button className="btn primary big" disabled={!canContinue} onClick={next}>
-          {index + 1 === lesson.steps.length ? 'Finish lesson' : 'Continue →'}
+          {index + 1 === lesson.steps.length ? 'Finish lesson' : 'Continue'} <Icon name="arrowRight" />
         </button>
       </div>
     </div>

@@ -46,6 +46,7 @@ export const sql: Realm = {
   name: 'Data Dungeon',
   topic: 'SQL & Databases',
   icon: '🗄️',
+  glyph: 'SQL',
   color: '#e38c00',
   when: 'Month 4',
   blurb: 'A real SQLite database in your browser. Query, aggregate, join, index — and understand what the database does with it.',

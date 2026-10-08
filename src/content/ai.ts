@@ -5,6 +5,7 @@ export const ai: Realm = {
   name: 'The AI Lab',
   topic: 'AI Engineering: LLMs, Embeddings, RAG, Agents',
   icon: '🤖',
+  glyph: 'AI',
   color: '#00cec9',
   when: 'Month 8–9',
   blurb: 'Stop treating AI as magic. Learn how LLMs work, then build embeddings search, RAG, and an agent loop from scratch.',

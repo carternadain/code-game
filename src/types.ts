@@ -91,6 +91,8 @@ export interface Realm {
   name: string
   topic: string
   icon: string
+  /** 1–4 characters shown on the realm's tile, e.g. 'JS', 'SQL', 'O(n)'. */
+  glyph: string
   color: string
   /** Suggested month in the 9-month plan, e.g. "Month 1". */
   when: string

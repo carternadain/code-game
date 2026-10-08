@@ -5,6 +5,7 @@ export const react: Realm = {
   name: 'Component Kingdom',
   topic: 'React + TypeScript',
   icon: '👑',
+  glyph: 'JSX',
   color: '#61dafb',
   when: 'Month 2–3',
   blurb: 'Understand what React actually does: components as functions, state, re-renders, effects. Live preview + tests.',

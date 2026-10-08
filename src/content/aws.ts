@@ -5,6 +5,7 @@ export const aws: Realm = {
   name: 'Cloud Archipelago',
   topic: 'AWS & the Cloud',
   icon: '☁️',
+  glyph: 'AWS',
   color: '#ff9900',
   when: 'Month 8',
   blurb: "The AWS services you'll actually touch, how IAM permissions really get evaluated, and serverless with Lambda.",

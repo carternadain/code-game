@@ -37,7 +37,7 @@ export function Visualizer({ step, onFinished }: { step: VisualStep; onFinished:
 
   return (
     <div className="visual">
-      <div className="visual-badge">👀 Watch it happen</div>
+      <span className="step-kicker">Watch it happen</span>
       <h2>{step.title}</h2>
 
       <div className={`visual-stage ${step.code ? '' : 'no-code'}`}>
@@ -77,16 +77,16 @@ export function Visualizer({ step, onFinished }: { step: VisualStep; onFinished:
 
       <div className="toolbar">
         <button className="btn ghost" onClick={() => setI(0)} disabled={i === 0}>
-          ⏮
+          Start
         </button>
         <button className="btn ghost" onClick={() => setI(Math.max(0, i - 1))} disabled={i === 0}>
-          ← Back
+          Back
         </button>
         <button className="btn primary" onClick={() => setI(Math.min(last, i + 1))} disabled={i === last}>
-          Next →
+          Next
         </button>
         <button className="btn ghost" onClick={() => (i === last ? (setI(0), setPlaying(true)) : setPlaying(!playing))}>
-          {playing ? '⏸ Pause' : i === last ? '↻ Replay' : '▶ Play'}
+          {playing ? 'Pause' : i === last ? 'Replay' : 'Autoplay'}
         </button>
         <span className="kbd-hint">← → arrow keys work too</span>
       </div>

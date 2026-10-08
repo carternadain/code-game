@@ -1,0 +1,11 @@
+{
+  "name": "CodeQuest",
+  "short_name": "CodeQuest",
+  "description": "Learn to code by playing: JS, TS, React, Python, SQL, Alembic, DSA, system design, AWS and AI.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f3f5fb",
+  "theme_color": "#141a33",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

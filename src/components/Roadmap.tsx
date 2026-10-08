@@ -1,5 +1,6 @@
 import { REALMS } from '../content'
 import { useGame } from '../game/GameContext'
+import { RealmTile } from './RealmTile'
 
 /** The 9-month plan at ~25 min/day. Months 1–3 = "fast track" if you go hard; 9 = comfortable pace. */
 const PHASES = [
@@ -72,37 +73,44 @@ export function Roadmap() {
   const { p } = useGame()
   return (
     <div className="page">
-      <h1>The 9-month roadmap</h1>
-      <p className="muted">
-        Noob → job-ready engineer at 20–30 min/day. Go faster if you can do more; the order matters more than the speed. Every month ends with a small project
-        you build <strong>without AI writing the code</strong> — that's where the learning gets cemented.
-      </p>
-      <div className="timeline">
-        {PHASES.map((phase) => (
-          <div key={phase.months} className="card phase">
-            <div className="phase-month">{phase.months}</div>
-            <h3>{phase.title}</h3>
-            <div className="phase-realms">
-              {phase.realms.map((id) => {
-                const r = REALMS.find((x) => x.id === id)!
-                const done = r.lessons.filter((l) => p.completed[l.id]).length
-                return (
-                  <a key={id} href={`#/realm/${id}`} className="realm-pill" style={{ ['--realm' as string]: r.color }}>
-                    {r.icon} {r.name}{' '}
-                    <span className="muted">
-                      {done}/{r.lessons.length}
-                    </span>
-                  </a>
-                )
-              })}
-            </div>
-            <p>
-              <strong>You can:</strong> {phase.goal}
-            </p>
-            <p className="muted">🛠 {phase.project}</p>
-          </div>
-        ))}
+      <div className="page-head">
+        <p className="eyebrow">Roadmap</p>
+        <h1>Noob to job-ready in 9 months</h1>
+        <p className="muted measure">
+          At 20–30 minutes a day. Go faster if you can do more; the order matters more than the speed. Each month ends with a small project you build{' '}
+          <strong>without AI writing the code</strong>. That's where it sticks.
+        </p>
       </div>
+      <ol className="timeline">
+        {PHASES.map((phase) => (
+          <li key={phase.months} className="phase">
+            <span className="phase-month">{phase.months}</span>
+            <div className="phase-body">
+              <h3>{phase.title}</h3>
+              <div className="phase-realms">
+                {phase.realms.map((id) => {
+                  const r = REALMS.find((x) => x.id === id)!
+                  const done = r.lessons.filter((l) => p.completed[l.id]).length
+                  return (
+                    <a key={id} href={`#/realm/${id}`} className="realm-pill">
+                      <RealmTile realm={r} size="sm" /> {r.name}
+                      <span className="muted tnum">
+                        {done}/{r.lessons.length}
+                      </span>
+                    </a>
+                  )
+                })}
+              </div>
+              <p>
+                <strong>By the end you can</strong> {phase.goal.charAt(0).toLowerCase() + phase.goal.slice(1)}
+              </p>
+              <p className="muted">
+                <strong>Project:</strong> {phase.project.replace(/^(Mini project|Capstone part \d): /, '')}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ol>
     </div>
   )
 }

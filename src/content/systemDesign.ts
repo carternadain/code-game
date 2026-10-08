@@ -5,6 +5,7 @@ export const systemDesign: Realm = {
   name: "Architect's Tower",
   topic: 'System Design',
   icon: '🗼',
+  glyph: 'SYS',
   color: '#a29bfe',
   when: 'Month 7–8',
   blurb: 'Scale from one server to millions of users: load balancers, caching, replication, sharding, queues. Then design real systems.',

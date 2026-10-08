@@ -5,6 +5,7 @@ export const csFundamentals: Realm = {
   name: 'The Engine Room',
   topic: 'How Code Runs (CS Fundamentals)',
   icon: '⚙️',
+  glyph: '01',
   color: '#ff8c42',
   when: 'Month 1–2',
   blurb: 'Go behind the curtain: compilers, the call stack, memory, the event loop, and how computers store numbers.',

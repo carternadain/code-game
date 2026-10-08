@@ -42,23 +42,24 @@ export function GameProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => save(p), [p])
 
-  const update = useCallback(
-    (fn: (p: Progress) => Progress) => {
-      setP((prev) => {
-        let next = fn(prev)
-        const unlocked = newAchievements(next)
-        if (unlocked.length) {
-          next = { ...next, achievements: [...next.achievements, ...unlocked.map((a) => a.id)], gems: next.gems + 10 * unlocked.length }
-          queueMicrotask(() => unlocked.forEach((a) => toast({ icon: a.icon, text: `Achievement: ${a.name} (+10 💎)`, kind: 'achievement' })))
-        }
-        const before = levelFor(prev.xp)
-        const after = levelFor(next.xp)
-        if (after > before) queueMicrotask(() => toast({ icon: '⬆️', text: `Level ${after}! You are now a ${titleFor(after)}`, kind: 'level' }))
-        return next
-      })
-    },
-    [toast],
-  )
+  const update = useCallback((fn: (p: Progress) => Progress) => setP(fn), [])
+
+  // Achievements and level-ups are detected after each change commits (not inside the state
+  // updater, which React may run twice), so each one is announced exactly once.
+  const shownLevel = useRef(levelFor(p.xp))
+  const announced = useRef(new Set<string>())
+  useEffect(() => {
+    const unlocked = newAchievements(p).filter((a) => !announced.current.has(a.id))
+    if (unlocked.length) {
+      unlocked.forEach((a) => announced.current.add(a.id))
+      unlocked.forEach((a) => toast({ icon: a.icon, text: `Achievement: ${a.name} (+10 gems)`, kind: 'achievement' }))
+      // eslint-disable-next-line react/set-state-in-effect -- awarding is a consequence of the committed state
+      setP((prev) => ({ ...prev, achievements: [...prev.achievements, ...unlocked.map((a) => a.id)], gems: prev.gems + 10 * unlocked.length }))
+    }
+    const level = levelFor(p.xp)
+    if (level > shownLevel.current) toast({ icon: '⬆️', text: `Level ${level}! You are now a ${titleFor(level)}`, kind: 'level' })
+    shownLevel.current = level
+  }, [p, toast])
 
   const award = useCallback(
     (xp: number, reason: string, opts: { combo?: boolean; gems?: number } = {}) => {
@@ -67,7 +68,7 @@ export function GameProvider({ children }: { children: ReactNode }) {
       pRef.current = { ...pRef.current, combo }
       update((prev) => touchStreak({ ...prev, xp: prev.xp + xp + bonus, combo, gems: prev.gems + (opts.gems ?? 0) }))
       queueMicrotask(() =>
-        toast({ icon: '✨', text: `+${xp + bonus} XP · ${reason}${bonus ? ` (combo +${bonus})` : ''}${opts.gems ? ` · +${opts.gems} 💎` : ''}`, kind: 'xp' }),
+        toast({ icon: '✨', text: `+${xp + bonus} XP · ${reason}${bonus ? ` (combo +${bonus})` : ''}${opts.gems ? ` · +${opts.gems} gems` : ''}`, kind: 'xp' }),
       )
     },
     [update, toast],
