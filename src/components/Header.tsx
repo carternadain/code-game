@@ -68,6 +68,7 @@ export function Header({ route }: { route: string }) {
     ['#/', 'Home', section === ''],
     ['#/map', 'Learn', ['map', 'realm', 'lesson'].includes(section)],
     ['#/review', 'Review', section === 'review'],
+    ['#/explain', 'Explain', section === 'explain'],
     ['#/roadmap', 'Roadmap', section === 'roadmap'],
     ['#/profile', 'Profile', section === 'profile'],
   ]

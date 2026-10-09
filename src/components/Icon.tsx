@@ -24,6 +24,7 @@ const PATHS = {
   trophy: 'M8 4h8v5a4 4 0 0 1-8 0zM8 6H4a3 3 0 0 0 4 4M16 6h4a3 3 0 0 1-4 4M12 13v4M8 21h8M9 17h6',
   dragon: 'M4 20c2-6 6-9 12-9l4-5-1 7c-2 4-6 6-10 6M14 11l-2-4',
   snow: 'M12 2v20M4 6l16 12M20 6 4 18',
+  mic: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3zM5 11a7 7 0 0 0 14 0M12 18v3M9 21h6',
 } as const
 
 export type IconName = keyof typeof PATHS

@@ -52,7 +52,7 @@ npm run dev        # http://localhost:5173
 | `npm run validate` | Run every challenge's solution against its tests (and check the starter code fails) |
 | `npm run lint` | Run oxlint |
 
-Your progress lives in your browser's localStorage. There are no accounts and no backend. Use **Profile → Export** to back it up.
+Your progress lives in your browser's localStorage. There are no accounts and no backend. Use **Profile → Download backup** to back it up.
 
 ## Host it for free
 
@@ -63,6 +63,19 @@ The app is a static site (no server, no database), so any free static host works
 Netlify, Cloudflare Pages and GitHub Pages also work with the same settings.
 
 **Install it like an app:** once it's hosted, open it in Chrome or Edge and choose *Install CodeQuest* (the icon in the address bar). On iPhone, use Share → *Add to Home Screen*. It then opens in its own window with its own icon.
+
+## Turn on AI feedback for "explain it back" (optional)
+
+Every explain step, plus the **Explain** page, lets you type or **talk** (mic button, works in Chrome, Edge and Safari) and get feedback from Claude: a 1–5 score, what you nailed, what's missing, and a simpler way to say it.
+
+The feedback runs in a small Vercel function (`api/feedback.ts`), so your API key never reaches the browser.
+
+1. Get an API key at [console.anthropic.com](https://console.anthropic.com) (Settings → API keys) and add a little credit. Each piece of feedback costs a fraction of a cent.
+2. In Vercel: your project → **Settings → Environment Variables**, add `ANTHROPIC_API_KEY` with the key.
+3. Optional but recommended: also add `FEEDBACK_PASSCODE` with any password. The app asks for it once, so strangers who find your URL can't spend your credits.
+4. Redeploy (Deployments → ⋯ → Redeploy).
+
+Without a key, explain steps still work and show the key-point checklist instead.
 
 ## Project layout
 

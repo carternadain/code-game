@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { ExplainPage } from './components/ExplainPage'
 import { Header } from './components/Header'
 import { LessonPlayer } from './components/LessonPlayer'
 import { Profile, RealmView, Review, Today, WorldMap } from './components/Pages'
@@ -63,6 +64,7 @@ function Router({ route }: { route: string }) {
   }
   if (section === 'map') return <WorldMap />
   if (section === 'review') return <Review />
+  if (section === 'explain') return <ExplainPage />
   if (section === 'profile') return <Profile />
   if (section === 'roadmap') return <Roadmap />
   return <Today />
