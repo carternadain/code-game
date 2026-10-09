@@ -6,6 +6,7 @@ import { debugging, devops, git, security } from './bonus'
 import { csFundamentals } from './csFundamentals'
 import { javascript } from './javascript'
 import { migrations } from './migrations'
+import { powerOn } from './powerOn'
 import { python } from './python'
 import { react } from './react'
 import { servers } from './servers'
@@ -47,6 +48,7 @@ for (const realm of [javascript, csFundamentals, react, sql, migrations, algorit
 
 /** Realms in suggested order. Everything is open — this order is a recommendation, not a lock. */
 export const REALMS: Realm[] = [
+  powerOn,
   javascript,
   csFundamentals,
   git,

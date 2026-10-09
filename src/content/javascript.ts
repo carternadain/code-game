@@ -1,4 +1,5 @@
 import type { Realm } from '../types'
+import { jsBasics } from './jsBasics'
 
 export const javascript: Realm = {
   id: 'js',
@@ -8,69 +9,9 @@ export const javascript: Realm = {
   glyph: 'JS',
   color: '#f7df1e',
   when: 'Month 1',
-  blurb: 'Rebuild your JS foundation without autocomplete doing the thinking: values, control flow, arrays, objects, closures.',
+  blurb: 'JavaScript from zero, one small idea at a time: printing, values, variables, lists, functions, then loops, objects and closures.',
   lessons: [
-    {
-      id: 'js-1',
-      title: 'Boot Up: Values & Variables',
-      minutes: 10,
-      steps: [
-        {
-          kind: 'concept',
-          title: 'Boxes with labels',
-          eli5: "A variable is a **labeled box**. You put a value in it and use the label to find it later. `const` = the label is glued on. `let` = you can swap what's inside.",
-          body: `
-A **variable** is a name that points to a value. JavaScript has a handful of value types:
-
-- \`number\` — \`42\`, \`3.14\` (one type for both!)
-- \`string\` — \`"hi"\`, \`'hi'\`, or a *template literal* in backticks that embeds values with \`\${...}\`
-- \`boolean\` — \`true\` / \`false\`
-- \`undefined\` (nothing assigned yet) and \`null\` (deliberately empty)
-- \`object\` — everything else: arrays, functions, \`{ key: value }\`
-
-## let vs const
-\`\`\`
-const name = 'Carter'  // can't be reassigned
-let hp = 100           // can be reassigned
-hp = hp - 10
-\`\`\`
-> Rule of thumb: use \`const\` by default. Reach for \`let\` only when the value must change. Never use \`var\` (it ignores block scope — a classic bug source).
-`,
-        },
-        {
-          kind: 'quiz',
-          prompt: 'What happens when this runs?',
-          code: `const items = ['sword']\nitems.push('shield')\nconsole.log(items)`,
-          options: ['TypeError: Assignment to constant variable', "['sword', 'shield']", "['sword']", 'undefined'],
-          answer: 1,
-          explain:
-            "`const` means the *variable* can't be re-pointed to a new value. The array it points to can still be changed (mutated). `items = []` would throw; `items.push()` is fine. `push` adds `'shield'` as a second item, and the comma is just how JavaScript prints a list: it separates item 0 from item 1.",
-        },
-        {
-          kind: 'code',
-          lang: 'javascript',
-          title: 'Your first function',
-          instructions: `
-Write a function \`greet(name)\` that **returns** the string \`Hello, <name>!\`.
-
-Use a *template literal*: wrap the text in backticks and drop the name in with \`\${name}\`. Click **Run** to execute the tests.
-`,
-          starter: `function greet(name) {\n  // return something here\n}\n\nconsole.log(greet('Carter'))\n`,
-          tests: `test("greet('Carter') returns 'Hello, Carter!'", () => expect(greet('Carter')).toBe('Hello, Carter!'))
-test("greet('Ada') returns 'Hello, Ada!'", () => expect(greet('Ada')).toBe('Hello, Ada!'))`,
-          hint: 'Inside the function: return `Hello, ${name}!` — note the backticks, not quotes.',
-          solution: `function greet(name) {\n  return \`Hello, \${name}!\`\n}\n\nconsole.log(greet('Carter'))\n`,
-        },
-        {
-          kind: 'quiz',
-          prompt: 'What does `typeof null` return in JavaScript?',
-          options: ["'null'", "'undefined'", "'object'", "'empty'"],
-          answer: 2,
-          explain:
-            "It's a famous bug from the first version of JavaScript in 1995 that can never be fixed without breaking the web. Values were stored with a type tag, and `null` happened to share the tag for objects. Check for null with `x === null`.",
-        },
-      ],
-    },
+    ...jsBasics,
     {
       id: 'js-2',
       title: 'Control Flow Canyon',

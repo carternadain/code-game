@@ -7,7 +7,7 @@ const PHASES = [
   {
     months: 'Month 1',
     title: 'Foundations: think like the computer',
-    realms: ['js', 'cs', 'git'],
+    realms: ['start', 'js', 'cs', 'git'],
     goal: 'Write small JS functions from a blank file with no AI. Explain the call stack and references out loud.',
     project: 'Mini project: a command-line quiz game in plain JavaScript (Node).',
   },

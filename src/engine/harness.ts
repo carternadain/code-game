@@ -4,6 +4,7 @@
  *
  * Learner tests look like:
  *   test('adds two numbers', () => { expect(add(2, 3)).toBe(5) })
+ *   test('prints hello', () => { expect(printed()[0]).toBe('Hello') })
  */
 export const HARNESS = String.raw`
 const __logs = [];
@@ -43,6 +44,8 @@ function expect(actual) {
   };
 }
 function test(name, fn) { __tests.push([name, fn]); }
+/** Everything printed with console.log so far, one string per call. */
+const printed = () => __logs.slice();
 const tick = (ms = 0) => new Promise((r) => setTimeout(r, ms));
 
 async function __runTests() {
