@@ -15,7 +15,7 @@ const REACT_DOM = vendor('react-dom.development.js')
  * In tests: `screen` is the preview document, `$`/`$$` query it, `text(sel)` reads text,
  * `click(el)` / `type(el, text)` interact and wait a tick so React can re-render.
  */
-export function runReact(userCode: string, tests: string, iframe: HTMLIFrameElement): Promise<RunResult> {
+export function runReact(userCode: string, tests: string, iframe: HTMLIFrameElement, setup = ''): Promise<RunResult> {
   let compiled: string
   try {
     // Imports are resolved for you: React and its hooks are globals in the preview.
@@ -71,6 +71,8 @@ document.addEventListener('submit', (e) => {
     // Your code gets its own scope so its variable names can't clash with the test helpers.
     const __App = (() => {
       const { useState, useEffect, useRef, useMemo, useReducer, useCallback, useContext, createContext, Fragment } = React;
+${setup}
+;
 ${compiled}
 ;
       return typeof App === 'function' ? App : undefined;

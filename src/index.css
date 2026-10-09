@@ -2061,5 +2061,296 @@ th {
   font-size: 1.05rem;
 }
 
-.hud-btn, .stat-chip, .tabs a { white-space: nowrap; }
-@media (max-width: 1180px) { .topbar .hide-sm { display: none; } }
+.hud-btn,
+.stat-chip,
+.tabs a {
+  white-space: nowrap;
+}
+@media (max-width: 1180px) {
+  .topbar .hide-sm {
+    display: none;
+  }
+}
+
+/* ---------- connections: builds-on chips, warm-up, tags ---------- */
+.builds-on {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+.builds-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font: inherit;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  padding: 2px 9px 2px 7px;
+  border-radius: 99px;
+  border: 1.5px solid var(--line);
+  border-left: 5px solid var(--chip, var(--accent));
+  background: var(--surface);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+}
+.chip:hover {
+  border-color: var(--edge);
+  border-left-color: var(--chip, var(--accent));
+}
+.chip.is-done {
+  background: var(--ok-soft);
+}
+.chip.is-done .icon {
+  color: var(--ok);
+}
+.boss-tag.remix-tag {
+  background: #7c3aed;
+}
+.boss-tag.project-tag {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.reader-card .builds-on {
+  margin-bottom: 14px;
+}
+.warmup h2 {
+  margin: 4px 0 8px;
+}
+.warmup .callout {
+  margin: 12px 0 0;
+}
+.warmup-from {
+  margin: 18px 0 6px;
+}
+.warmup .toolbar {
+  margin-top: 16px;
+  justify-content: space-between;
+}
+
+/* ---------- Learn section tabs ---------- */
+.seg-nav {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+  background: var(--sunk);
+  align-self: flex-start;
+  margin-bottom: 4px;
+}
+.seg-nav a {
+  padding: 6px 14px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--muted);
+  text-decoration: none;
+}
+.seg-nav a.active {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow:
+    0 1px 0 var(--line),
+    0 0 0 1.5px var(--edge);
+}
+
+/* ---------- skill tree ---------- */
+.tree-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.tree-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 4px;
+  border: 2px solid var(--line);
+  background: var(--surface);
+}
+.dot.is-done {
+  background: var(--ok);
+  border-color: var(--ok);
+}
+.dot.is-ready {
+  background: var(--hl);
+  border-color: var(--edge);
+}
+.tree-scroll {
+  overflow: auto;
+  max-height: 72vh;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  overscroll-behavior: contain;
+}
+.tree {
+  display: block;
+}
+.tree .row-a {
+  fill: var(--surface);
+}
+.tree .row-b {
+  fill: var(--paper);
+}
+.tree .row-glyph {
+  font-family: var(--pixel);
+  font-size: 10px;
+}
+.tree .row-name {
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 13px;
+  fill: var(--ink);
+}
+.tree .edge {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.5;
+  transition:
+    opacity 0.2s,
+    stroke 0.2s;
+}
+.tree .edge.is-done {
+  stroke: var(--ok);
+  opacity: 0.55;
+}
+.tree .edge.is-on {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  opacity: 1;
+}
+.tree .edge.is-off {
+  opacity: 0.08;
+}
+.tree .node {
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.tree .node rect:first-of-type {
+  fill: var(--surface);
+  stroke: var(--line);
+  stroke-width: 1.5;
+}
+.tree .node text {
+  font-family: var(--body);
+  font-size: 12px;
+  fill: var(--ink);
+  pointer-events: none;
+}
+.tree .node.is-done rect:first-of-type {
+  fill: var(--ok-soft);
+  stroke: var(--ok);
+}
+.tree .node.is-ready rect:first-of-type {
+  fill: var(--hl-soft);
+  stroke: var(--edge);
+  stroke-width: 2;
+}
+.tree .node.is-boss rect:first-of-type {
+  stroke-width: 2.5;
+}
+.tree .node.is-off {
+  opacity: 0.22;
+}
+.tree .node.is-selected rect:first-of-type {
+  stroke: var(--accent);
+  stroke-width: 3;
+}
+.tree .node:hover rect:first-of-type,
+.tree .node:focus-visible rect:first-of-type {
+  stroke: var(--accent);
+}
+.tree .node:focus {
+  outline: none;
+}
+.tree-panel {
+  position: sticky;
+  top: calc(var(--bar-h) + 8px);
+  z-index: 5;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface);
+  border: 2px solid var(--edge);
+  border-radius: 12px;
+  box-shadow: 4px 4px 0 var(--edge);
+}
+.tree-panel-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.tree-panel .toolbar {
+  flex-shrink: 0;
+}
+
+/* ---------- Guild Tracker project ---------- */
+.stack-diagram {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 10px;
+}
+.stack-diagram .layer {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 2px dashed var(--line);
+  color: var(--muted);
+}
+.stack-diagram .layer.is-partial {
+  border-style: solid;
+  border-color: var(--hl);
+  background: var(--hl-soft);
+  color: var(--ink);
+}
+.stack-diagram .layer.is-built {
+  border-style: solid;
+  border-color: var(--ok);
+  background: var(--ok-soft);
+  color: var(--ink);
+}
+.syl-row.is-next {
+  border-color: var(--accent);
+  box-shadow: 4px 4px 0 var(--accent);
+}
+
+@media (max-width: 720px) {
+  .tree-panel {
+    flex-wrap: wrap;
+  }
+  .tree-panel .toolbar {
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .tree-scroll {
+    max-height: 64vh;
+  }
+}
+.tree .tree-labels > g > rect:first-child {
+  filter: drop-shadow(4px 0 4px rgba(20, 26, 51, 0.08));
+}

@@ -38,13 +38,17 @@ export function Markdown({ text }: { text: string }) {
       const ordered = /^\s*\d+\./.test(line)
       const items: string[] = []
       while (i < lines.length && /^\s*([-*]|\d+\.) /.test(lines[i])) items.push(lines[i++].replace(/^\s*([-*]|\d+\.) /, ''))
-      const L = ordered ? 'ol' : 'ul'
+      // "1. … then a paragraph … 2. …" keeps counting from 2 instead of restarting at 1.
+      const start = ordered ? Number(line.trim().split('.')[0]) : 1
+      const listItems = items.map((t, j) => <li key={j}>{inline(t)}</li>)
       blocks.push(
-        <L key={blocks.length}>
-          {items.map((t, j) => (
-            <li key={j}>{inline(t)}</li>
-          ))}
-        </L>,
+        ordered ? (
+          <ol key={blocks.length} start={start}>
+            {listItems}
+          </ol>
+        ) : (
+          <ul key={blocks.length}>{listItems}</ul>
+        ),
       )
     } else if (line.startsWith('> ')) {
       const body: string[] = []

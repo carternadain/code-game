@@ -66,7 +66,7 @@ export function Header({ route }: { route: string }) {
 
   const tabs: [string, string, boolean][] = [
     ['#/', 'Home', section === ''],
-    ['#/map', 'Learn', ['map', 'realm', 'lesson'].includes(section)],
+    ['#/map', 'Learn', ['map', 'tree', 'project', 'realm', 'lesson'].includes(section)],
     ['#/review', 'Review', section === 'review'],
     ['#/explain', 'Explain', section === 'explain'],
     ['#/roadmap', 'Roadmap', section === 'roadmap'],

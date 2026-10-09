@@ -4,6 +4,7 @@ import { scheduleReview, today } from '../game/progress'
 import type { Lesson, Realm } from '../types'
 import { RealmTile } from './RealmTile'
 import { Icon } from './Icon'
+import { BuildsOn, WarmUp } from './Connections'
 import { Concept, Explain, Quiz } from './Steps'
 import { Visualizer } from './Visualizer'
 
@@ -17,6 +18,8 @@ export function LessonPlayer({ realm, lesson, onExit }: { realm: Realm; lesson: 
   const [index, setIndex] = useState(() => Math.min(p.stepProgress[lesson.id] ?? 0, lesson.steps.length - 1))
   const [stepDone, setStepDone] = useState(false)
   const [finished, setFinished] = useState(false)
+  // Fresh starts open with a warm-up (resuming mid-lesson skips it).
+  const [warm, setWarm] = useState(() => p.stepProgress[lesson.id] == null && !!lesson.uses?.length)
   const step = lesson.steps[index]
   const key = `${lesson.id}#${index}`
   const markDone = useCallback(() => setStepDone(true), [])
@@ -87,6 +90,17 @@ export function LessonPlayer({ realm, lesson, onExit }: { realm: Realm; lesson: 
     )
   }
 
+  if (warm) {
+    return (
+      <div className="lesson">
+        <LessonBar realm={realm} lesson={lesson} index={-1} onExit={onExit} />
+        <div className="lesson-stage">
+          <WarmUp lesson={lesson} onDone={() => setWarm(false)} />
+        </div>
+      </div>
+    )
+  }
+
   const canContinue = step.kind === 'concept' || stepDone
   const workspace = step.kind === 'code'
   const label = { concept: 'Read', visual: 'Watch', quiz: 'Quiz', code: 'Code challenge', explain: 'Explain it back' }[step.kind]
@@ -100,30 +114,12 @@ export function LessonPlayer({ realm, lesson, onExit }: { realm: Realm; lesson: 
 
   return (
     <div className={`lesson ${workspace ? 'is-workspace' : ''}`}>
-      <div className="lesson-bar">
-        <button className="icon-btn" onClick={() => onExit(false)} aria-label="Leave lesson">
-          <Icon name="x" />
-        </button>
-        <RealmTile realm={realm} size="sm" />
-        <span className="lesson-name">
-          <span className="muted small">{realm.name}</span>
-          <strong>
-            {lesson.title.replace(/^BOSS: /, '')} {lesson.boss && <span className="boss-tag">Boss</span>}
-          </strong>
-        </span>
-        <span className="steps-bar" aria-label={`Step ${index + 1} of ${lesson.steps.length}`}>
-          {lesson.steps.map((s, i) => (
-            <span key={i} className={`seg ${i < index ? 'done' : i === index ? 'now' : ''}`} title={s.kind} />
-          ))}
-        </span>
-        <span className="muted small tnum">
-          {index + 1}/{lesson.steps.length}
-        </span>
-      </div>
+      <LessonBar realm={realm} lesson={lesson} index={index} onExit={onExit} />
 
       <div className="lesson-stage" key={key}>
         {step.kind === 'concept' && (
           <div className="reader-card">
+            {index === 0 && <BuildsOn lesson={lesson} />}
             <Concept step={step} />
           </div>
         )}
@@ -200,6 +196,31 @@ export function LessonPlayer({ realm, lesson, onExit }: { realm: Realm; lesson: 
           {index + 1 === lesson.steps.length ? 'Finish lesson' : 'Continue'} <Icon name="arrowRight" />
         </button>
       </div>
+    </div>
+  )
+}
+
+function LessonBar({ realm, lesson, index, onExit }: { realm: Realm; lesson: Lesson; index: number; onExit: (next: boolean) => void }) {
+  return (
+    <div className="lesson-bar">
+      <button className="icon-btn" onClick={() => onExit(false)} aria-label="Leave lesson">
+        <Icon name="x" />
+      </button>
+      <RealmTile realm={realm} size="sm" />
+      <span className="lesson-name">
+        <span className="muted small">{realm.name}</span>
+        <strong>
+          {lesson.title.replace(/^(BOSS|Remix): /, '')} {lesson.boss && <span className="boss-tag">Boss</span>}
+          {lesson.remix && <span className="boss-tag remix-tag">Remix</span>}
+          {lesson.project && <span className="boss-tag project-tag">Project · part {lesson.project.part}</span>}
+        </strong>
+      </span>
+      <span className="steps-bar" aria-label={`Step ${index + 1} of ${lesson.steps.length}`}>
+        {lesson.steps.map((s, i) => (
+          <span key={i} className={`seg ${i < index ? 'done' : i === index ? 'now' : ''}`} title={s.kind} />
+        ))}
+      </span>
+      <span className="muted small tnum">{index < 0 ? 'Warm-up' : `${index + 1}/${lesson.steps.length}`}</span>
     </div>
   )
 }

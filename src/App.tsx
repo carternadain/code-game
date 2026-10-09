@@ -3,7 +3,9 @@ import { ExplainPage } from './components/ExplainPage'
 import { Header } from './components/Header'
 import { LessonPlayer } from './components/LessonPlayer'
 import { Profile, RealmView, Review, Today, WorldMap } from './components/Pages'
+import { ProjectPage } from './components/ProjectPage'
 import { Roadmap } from './components/Roadmap'
+import { SkillTree } from './components/SkillTree'
 import { ALL_LESSONS, REALMS, findLesson } from './content'
 import { GameProvider, useGame } from './game/GameContext'
 
@@ -63,6 +65,8 @@ function Router({ route }: { route: string }) {
     if (realm) return <RealmView realm={realm} />
   }
   if (section === 'map') return <WorldMap />
+  if (section === 'tree') return <SkillTree />
+  if (section === 'project') return <ProjectPage />
   if (section === 'review') return <Review />
   if (section === 'explain') return <ExplainPage />
   if (section === 'profile') return <Profile />

@@ -26,6 +26,8 @@ self.onmessage = async (e) => {
     return (idx >= 0 ? lines.slice(idx) : lines.slice(-3)).join('\\n');
   };
   let error;
+  // Modules that aren't part of core Pyodide (like sqlite3) are downloaded the first time you import them.
+  try { await py.loadPackagesFromImports(code); } catch (err) { /* the import itself will report it */ }
   try { await py.runPythonAsync(code, { globals: ns }); }
   catch (err) { error = clean(err); }
   const tests = [];

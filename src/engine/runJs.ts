@@ -17,7 +17,7 @@ export function stripTypes(code: string, jsx = false): string {
  * Runs code in a throwaway Web Worker: separate thread, no access to the page,
  * and we can kill it if it loops forever (try `while (true) {}` — you'll see).
  */
-export function runJs(userCode: string, tests: string, lang: 'javascript' | 'typescript'): Promise<RunResult> {
+export function runJs(userCode: string, tests: string, lang: 'javascript' | 'typescript', setup = ''): Promise<RunResult> {
   let compiled: string
   try {
     compiled = lang === 'typescript' ? stripTypes(userCode) : userCode
@@ -30,6 +30,8 @@ self.onmessage = async () => {
   let error;
   try {
     await (async () => {
+${setup}
+;
 ${compiled}
 ;
 ${tests}

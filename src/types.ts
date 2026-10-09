@@ -61,7 +61,11 @@ export interface CodeStep {
    *   your last statement is compared with the solution's.
    */
   tests: string
-  /** sql only: schema + seed data run before your query. */
+  /**
+   * sql: schema + seed data run before your query.
+   * javascript/typescript/react: hidden JS run just before your code, in the same scope
+   *   (e.g. FAKE_API, which defines a pretend `fetch`). Only define names learners won't reuse.
+   */
   setup?: string
   hint: string
   solution: string
@@ -84,6 +88,12 @@ export interface Lesson {
   boss?: boolean
   minutes: number
   steps: Step[]
+  /** Ids of earlier lessons this one builds on. Drives warm-ups, "builds on" chips and the skill tree. */
+  uses?: string[]
+  /** Combines several earlier ideas in one problem. */
+  remix?: boolean
+  /** Part of the Guild Tracker project that grows across realms. */
+  project?: { part: number; adds: string }
 }
 
 export interface Realm {

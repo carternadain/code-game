@@ -1,9 +1,11 @@
 import { useRef, useState } from 'react'
-import { ALL_LESSONS, REALMS, findQuiz, nextLesson } from '../content'
+import { ALL_LESSONS, PROJECT_PARTS, REALMS, findQuiz, nextLesson } from '../content'
 import { SESSION_MINUTES, useGame } from '../game/GameContext'
 import { ACHIEVEMENTS, addDays, dueReviews, initialProgress, levelFor, liveStreak, scheduleReview, titleFor, today, type Progress } from '../game/progress'
 import type { Lesson, Realm, Step } from '../types'
 import { RealmTile } from './RealmTile'
+import { LearnNav } from './SkillTree'
+import { BuildsOn } from './Connections'
 import { Icon, type IconName } from './Icon'
 import { Quiz } from './Steps'
 import { backupDue, downloadBackup, requestPersistentStorage, usePersisted } from '../game/storage'
@@ -43,6 +45,7 @@ export function Today() {
     update((prev) => ({ ...prev, lastBackup }))
   }
   const next = nextLesson(p.completed)
+  const projectNext = PROJECT_PARTS.find((x) => !p.completed[x.lesson.id])
   const due = dueReviews(p)
   const minutes = p.minutesByDay[today()] ?? 0
   const streak = liveStreak(p)
@@ -147,6 +150,20 @@ export function Today() {
             </button>
           </div>
         )}
+        {projectNext && (
+          <a className="quest-row" href="#/project">
+            <Icon name="hammer" size={22} />
+            <span>
+              <strong>
+                Guild Tracker: part {projectNext.lesson.project!.part} of {PROJECT_PARTS.length}
+              </strong>
+              <span className="muted small">
+                Next: add {projectNext.lesson.project!.adds} ({projectNext.realm.name}). One app that grows with every realm.
+              </span>
+            </span>
+            <Icon name="arrowRight" />
+          </a>
+        )}
         <a className={`quest-row ${due.length ? '' : 'is-idle'}`} href={due.length ? '#/review' : undefined}>
           <Icon name="brain" size={22} />
           <span>
@@ -250,7 +267,7 @@ export function WorldMap() {
   return (
     <div className="page">
       <div className="page-head">
-        <p className="eyebrow">Learn</p>
+        <LearnNav active="map" />
         <h1>Pick a realm</h1>
         <p className="muted measure">
           {done} of {total} lessons cleared. Realms are listed in the suggested order, but all of them are open, so follow your curiosity.
@@ -319,13 +336,16 @@ export function RealmView({ realm }: { realm: Realm }) {
               <span className="syl-num tnum">{done ? <Icon name="check" size={16} /> : l.boss ? <Icon name="dragon" size={18} /> : i + 1}</span>
               <span className="syl-main">
                 <strong>
-                  {l.title.replace(/^BOSS: /, '')} {l.boss && <span className="boss-tag">Boss</span>}
+                  {l.title.replace(/^(BOSS|Remix): /, '')} {l.boss && <span className="boss-tag">Boss</span>}
+                  {l.remix && <span className="boss-tag remix-tag">Remix</span>}
+                  {l.project && <span className="boss-tag project-tag">Project · part {l.project.part}</span>}
                 </strong>
                 <span className="row-meta">
                   <span>~{l.minutes} min</span>
                   <StepMix lesson={l} />
                   {started && !done && <span className="pill">In progress</span>}
                 </span>
+                <BuildsOn lesson={l} />
               </span>
               <a className={`btn ${done ? '' : 'primary'} small`} href={`#/lesson/${l.id}`}>
                 {done ? 'Replay' : started ? 'Resume' : 'Start'}

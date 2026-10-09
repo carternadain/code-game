@@ -29,12 +29,12 @@ const fail = (where: string, msg: string) => {
 type Outcome = { ok: boolean; detail: string }
 let lastNames: string[] = []
 
-async function runJs(code: string, tests: string, ts: boolean): Promise<Outcome> {
+async function runJs(code: string, tests: string, ts: boolean, setup = ''): Promise<Outcome> {
   const compiled = ts ? transform(code, { transforms: ['typescript'] }).code : code
   const src = `${HARNESS}
 (async () => {
   let error
-  try { await (async () => {\n${compiled}\n;\n${tests}\n})() } catch (e) { error = String(e && e.message || e) }
+  try { await (async () => {\n${setup}\n;\n${compiled}\n;\n${tests}\n})() } catch (e) { error = String(e && e.message || e) }
   return { error, tests: error ? [] : await __runTests() }
 })()`
   try {
@@ -96,10 +96,16 @@ function runSqlCheck(step: CodeStep, code: string): Outcome {
 }
 
 const ids = new Set<string>()
+const allIds = new Set(ALL_LESSONS.map((x) => x.lesson.id))
 let checked = 0
 for (const { realm, lesson } of ALL_LESSONS) {
   const where = `${realm.id}/${lesson.id}`
   if (ids.has(lesson.id)) fail(where, 'duplicate lesson id')
+  // A lesson can only build on lessons that come before it in the course (which also rules out cycles).
+  for (const u of lesson.uses ?? []) {
+    if (!allIds.has(u)) fail(where, `uses unknown lesson "${u}"`)
+    else if (!ids.has(u)) fail(where, `uses "${u}", which comes later in the course`)
+  }
   ids.add(lesson.id)
 
   for (const [i, step] of lesson.steps.entries()) {
@@ -129,10 +135,11 @@ for (const { realm, lesson } of ALL_LESSONS) {
       const self = runSqlCheck(step, step.solution)
       if (!self.ok) good = self
     } else {
-      good = await runJs(step.solution, step.tests, step.lang === 'typescript')
+      good = await runJs(step.solution, step.tests, step.lang === 'typescript', step.setup)
       const listed = checkpointNames(step)
-      if (good.ok && JSON.stringify(listed) !== JSON.stringify(lastNames)) fail(at, `checkpoint list ${JSON.stringify(listed)} != tests ${JSON.stringify(lastNames)}`)
-      starter = await runJs(step.starter, step.tests, step.lang === 'typescript')
+      if (good.ok && JSON.stringify(listed) !== JSON.stringify(lastNames))
+        fail(at, `checkpoint list ${JSON.stringify(listed)} != tests ${JSON.stringify(lastNames)}`)
+      starter = await runJs(step.starter, step.tests, step.lang === 'typescript', step.setup)
     }
     if (!good.ok) fail(at, `SOLUTION fails: ${good.detail}`)
     if (starter.ok) fail(at, 'starter code already passes (nothing to do!)')

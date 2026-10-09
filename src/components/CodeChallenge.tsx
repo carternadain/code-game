@@ -118,8 +118,8 @@ export function CodeChallenge({
         }
       }
       let r: RunResult
-      if (step.lang === 'javascript' || step.lang === 'typescript') r = await runJs(code, step.tests, step.lang)
-      else if (step.lang === 'react') r = await runReact(code, step.tests, iframeRef.current!)
+      if (step.lang === 'javascript' || step.lang === 'typescript') r = await runJs(code, step.tests, step.lang, step.setup)
+      else if (step.lang === 'react') r = await runReact(code, step.tests, iframeRef.current!, step.setup)
       else if (step.lang === 'python') r = await runPython(code, step.tests)
       else r = await runSql(code, step.setup ?? '', step.tests, step.solution)
       setResult(r)
