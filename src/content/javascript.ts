@@ -44,7 +44,7 @@ hp = hp - 10
           options: ['TypeError: Assignment to constant variable', "['sword', 'shield']", "['sword']", 'undefined'],
           answer: 1,
           explain:
-            "`const` means the *variable* can't be re-pointed to a new value. The array it points to can still be changed (mutated). `items = []` would throw; `items.push()` is fine.",
+            "`const` means the *variable* can't be re-pointed to a new value. The array it points to can still be changed (mutated). `items = []` would throw; `items.push()` is fine. `push` adds `'shield'` as a second item, and the comma is just how JavaScript prints a list: it separates item 0 from item 1.",
         },
         {
           kind: 'code',
