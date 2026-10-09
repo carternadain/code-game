@@ -6,6 +6,7 @@ import type { Lesson, Realm, Step } from '../types'
 import { RealmTile } from './RealmTile'
 import { Icon, type IconName } from './Icon'
 import { Quiz } from './Steps'
+import { backupDue, downloadBackup, requestPersistentStorage, usePersisted } from '../game/storage'
 
 const realmDone = (realm: Realm, p: Progress) => realm.lessons.filter((l) => p.completed[l.id]).length
 const FREEZE_COST = 50
@@ -36,7 +37,11 @@ function StepMix({ lesson }: { lesson: Lesson }) {
 // ---------------------------------------------------------------- Home
 
 export function Today() {
-  const { p, update } = useGame()
+  const { p, update, toast } = useGame()
+  const backUp = () => {
+    const { lastBackup } = downloadBackup(p)
+    update((prev) => ({ ...prev, lastBackup }))
+  }
   const next = nextLesson(p.completed)
   const due = dueReviews(p)
   const minutes = p.minutesByDay[today()] ?? 0
@@ -121,6 +126,27 @@ export function Today() {
       </div>
 
       <div className="side-quests">
+        {backupDue(p) && (
+          <div className="quest-row is-alert">
+            <Icon name="flag" size={22} />
+            <span>
+              <strong>Back up your progress</strong>
+              <span className="muted small">
+                {p.lastBackup ? `Last backup was ${p.lastBackup}.` : "You haven't made a backup yet."} It takes one click and protects against cleared browser
+                data.
+              </span>
+            </span>
+            <button
+              className="btn small primary"
+              onClick={() => {
+                backUp()
+                toast({ icon: '💾', text: 'Backup downloaded. See you next week.', kind: 'info' })
+              }}
+            >
+              Back up
+            </button>
+          </div>
+        )}
         <a className={`quest-row ${due.length ? '' : 'is-idle'}`} href={due.length ? '#/review' : undefined}>
           <Icon name="brain" size={22} />
           <span>
@@ -402,12 +428,14 @@ export function Profile() {
   const totalMinutes = Object.values(p.minutesByDay).reduce((a, b) => a + b, 0)
   const journal = Object.entries(p.journal)
 
+  const [persisted, setPersisted] = usePersisted()
+  const backUp = () => {
+    const { lastBackup } = downloadBackup(p)
+    update((prev) => ({ ...prev, lastBackup }))
+  }
   function exportProgress() {
-    const blob = new Blob([JSON.stringify(p, null, 2)], { type: 'application/json' })
-    const a = document.createElement('a')
-    a.href = URL.createObjectURL(blob)
-    a.download = `codequest-progress-${today()}.json`
-    a.click()
+    backUp()
+    toast({ icon: '💾', text: 'Backup downloaded. Keep it somewhere safe, like iCloud or Google Drive.', kind: 'info' })
   }
 
   function importProgress(file: File) {
@@ -416,7 +444,7 @@ export function Profile() {
         const data = JSON.parse(t)
         if (typeof data.xp !== 'number') throw new Error('not a progress file')
         update(() => ({ ...initialProgress(), ...data }))
-        toast({ icon: '📥', text: 'Progress imported', kind: 'info' })
+        toast({ icon: '📥', text: 'Backup restored', kind: 'info' })
       } catch {
         toast({ icon: '⚠️', text: "That file isn't a CodeQuest save. Pick a .json file you exported here.", kind: 'info' })
       }
@@ -482,13 +510,39 @@ export function Profile() {
       </div>
 
       <h2 className="section-title">Save data</h2>
-      <p className="muted small measure">Progress is saved in this browser only. Export it to back it up or move it to another device.</p>
+      <div className="save-status">
+        <div className={`save-row ${persisted ? 'is-ok' : ''}`}>
+          <Icon name={persisted ? 'check' : 'lock'} size={18} />
+          <span>
+            <strong>{persisted ? 'Saved permanently on this device' : 'Saved on this device'}</strong>
+            <span className="muted small">
+              {persisted
+                ? "Your browser won't clear it to free up space. Clearing your browsing data or using a private window still would."
+                : persisted === false
+                  ? "Your browser hasn't granted permanent storage yet. Chrome usually grants it once you install the app or visit often."
+                  : 'Checking storage…'}
+            </span>
+          </span>
+          {persisted === false && (
+            <button className="btn small" onClick={() => requestPersistentStorage().then(setPersisted)}>
+              Ask again
+            </button>
+          )}
+        </div>
+        <div className="save-row">
+          <Icon name="flag" size={18} />
+          <span>
+            <strong>{p.lastBackup ? `Last backup: ${p.lastBackup}` : 'No backup yet'}</strong>
+            <span className="muted small">A backup file restores everything on any device or browser with Restore from backup.</span>
+          </span>
+        </div>
+      </div>
       <div className="toolbar">
-        <button className="btn" onClick={exportProgress}>
-          Export progress
+        <button className="btn primary" onClick={exportProgress}>
+          Download backup
         </button>
         <button className="btn" onClick={() => fileRef.current?.click()}>
-          Import progress
+          Restore from backup
         </button>
         <input
           id="import-file"

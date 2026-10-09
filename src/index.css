@@ -1878,3 +1878,38 @@ th {
     padding: 18px;
   }
 }
+
+/* ---------- save status ---------- */
+.save-status {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.save-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 2px solid var(--line);
+}
+.save-row > span {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.save-row.is-ok {
+  border-color: var(--ok);
+}
+.save-row.is-ok > .icon {
+  color: var(--ok);
+}
+.quest-row.is-alert {
+  border-color: var(--warn);
+  background: var(--hl-soft);
+}
+.quest-row.is-alert > .icon:first-child {
+  color: var(--warn);
+}

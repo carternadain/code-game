@@ -23,6 +23,8 @@ export interface Progress {
   achievements: string[]
   journal: Record<string, string>
   drafts: Record<string, string>
+  /** Day of the last exported backup file. */
+  lastBackup?: string
   stats: { codePasses: number; noHintPasses: number; langsPassed: string[]; bossesBeaten: number; quizRight: number }
 }
 

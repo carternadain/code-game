@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { requestPersistentStorage } from './storage'
 import { levelFor, load, newAchievements, save, titleFor, today, touchStreak, type Progress } from './progress'
 
 export interface Toast {
@@ -41,6 +42,12 @@ export function GameProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => save(p), [p])
+
+  // Once there's real progress worth keeping, ask the browser to store it permanently.
+  const hasProgress = p.xp > 0
+  useEffect(() => {
+    if (hasProgress) requestPersistentStorage()
+  }, [hasProgress])
 
   const update = useCallback((fn: (p: Progress) => Progress) => setP(fn), [])
 
