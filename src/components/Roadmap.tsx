@@ -14,7 +14,7 @@ const PHASES = [
   {
     months: 'Month 2',
     title: 'Types & the event loop',
-    realms: ['cs', 'ts'],
+    realms: ['think', 'cs', 'ts'],
     goal: 'Read and fix TypeScript compile errors yourself. Predict the output of async code.',
     project: 'Mini project: convert your quiz game to TypeScript with strict mode on.',
   },

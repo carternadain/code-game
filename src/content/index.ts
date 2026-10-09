@@ -12,6 +12,7 @@ import { react } from './react'
 import { servers } from './servers'
 import { sql } from './sql'
 import { systemDesign } from './systemDesign'
+import { thinking } from './thinking'
 import { typescript } from './typescript'
 import {
   alembicVisual,
@@ -50,6 +51,7 @@ for (const realm of [javascript, csFundamentals, react, sql, migrations, algorit
 export const REALMS: Realm[] = [
   powerOn,
   javascript,
+  thinking,
   csFundamentals,
   git,
   typescript,
